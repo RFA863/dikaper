@@ -145,14 +145,12 @@ class JamkesdaController extends Controller
             'jenis_rawat' => 'required',
             'dikelas' => 'required',
             'dijamin_sejak' => 'required',
-            // 'tgl_aktif_va' => 'required',
             'status_kepersertaan' => 'required',
 
             'ktp_kk' =>  ['required', 'mimes:pdf', 'max:2000'],
             'sktm' =>  ['required', 'mimes:pdf', 'max:2000'],
             'doc' =>  ['required', 'mimes:pdf', 'max:2000'],
-            // 'ktp_kk' => 'required',
-            // 'va' => 'required',
+
 
         ], [
             'no_ktp.required' => 'Form input harap diisi',
@@ -411,10 +409,6 @@ class JamkesdaController extends Controller
             })
             ->get();
 
-        // Ambil semua data rumahsakit yang cocok dengan kode_rs, lalu masukkan ke dalam array untuk akses cepat
-        // $rumahsakitData = DB::table('rumahsakit')
-        //     ->where('kode', $request->kode_rs)
-        //     ->first();
 
         $rumahsakitData = DB::select(
             'SELECT * FROM rumahsakit rs WHERE rs.kode = :kode_rs LIMIT 1',
@@ -655,7 +649,9 @@ class JamkesdaController extends Controller
             'tarif_rs' => $request->tarif_rs,
             'biaya_lainnya' => $request->biaya_lainnya,
             'total_biaya' => $request->total_biaya,
-            'keterangan' => '0',
+            'keterangan' => $request->keterangan ?? "Belum Dibayar",
+            'total_pembayaran' => $request->total_pembayaran ?? "0",
+            'tgl_pembayaran' => $request->tgl_pembayaran ?? null,
         ];
 
         $pembayaran = Pembayaran::where('pasien_id', $pasien_id);
