@@ -32,6 +32,57 @@
                                 enctype="multipart/form-data">
                                 @csrf
                                 @method('PUT')
+
+                                <div class="mb-3">
+                                    <label for="username">Tanggal Verifikasi</label>
+                                    <div class="input-group">
+                                        <input type="date" name="tanggal"
+                                            class="form-control @error('tanggal') is-invalid @enderror" required
+                                            disabled value="{{ $bap->tanggal }}">
+                                        @error('tanggal')
+                                        <div class="invalid-feedback" style="width: 100%;">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+
+
+                                <div class="mb-3">
+                                    <label for="country">Rumah Sakit</label>
+                                    <select class="d-block form-control @error('rumahsakit_id') is-invalid @enderror"
+                                        name="rumahsakit_id" disabled>
+                                        <option value="{{$rumahsakit->kode}}"> {{$rumahsakit->nama}}</option>
+                                        {{-- @foreach ($rumahsakit as $rum)
+                                        <option value="{{ $rum->kode }}" {{ $bap->rumahsakit_id == $rum->kode ?
+                                            'selected' : ''}}>
+                                            {{ $rum->nama }}</option>
+                                        @endforeach --}}
+                                    </select>
+                                    @error('rumahsakit_id')
+                                    <div class="invalid-feedback" style="width: 100%;">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="username">File Draft BAP <span class="text-danger">*</span></label>
+                                    <a href="{{ asset('uploads/draft_bap/' . $bap->draft_bap) }}" target="_blank"
+                                        class="btn btn-secondary">File Draft
+                                        BAP</a>
+                                    {{-- <div class="input-group">
+                                        <input type="file" class="form-control @error('bap') is-invalid @enderror"
+                                            name="bap">
+                                        @error('bap')
+                                        <div class="invalid-feedback" style="width: 100%;">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div> --}}
+                                </div>
+
                                 <div class="mb-3">
                                     <label for="username">File BAP <span class="text-danger">*</span></label>
                                     <div class="input-group">

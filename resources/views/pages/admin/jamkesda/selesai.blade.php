@@ -108,7 +108,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-2">
                                 <button type="submit" class="btn btn-success mt-4">Cetak</button>
                             </div>
@@ -190,9 +190,11 @@
                                             </td>
                                             <td>
                                                 @if ($row->pembayaran)
-                                                {{
-                                                $row->pembayaran->keterangan
-                                                }}
+                                                @if ($row->pembayaran->keterangan)
+                                                {{$row->pembayaran->keterangan}}
+                                                @endif
+                                                @else
+                                                Belum Dibayar
                                                 @endif
                                             </td>
                                             <td>

@@ -87,7 +87,7 @@
                                 </div>
                             </div>
 
-                          <div class="col-md-2">
+                            <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="keterangan">Status Pembayaran</label>
                                     <select class="form-control  @error('keterangan') is-invalid @enderror" id="
@@ -104,7 +104,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            
+
                             <div class="col-md-2">
                                 <button type="submit" class="btn btn-success mt-4">Cetak</button>
                             </div>
@@ -185,9 +185,11 @@
                                             </td>
                                             <td>
                                                 @if ($row->pembayaran)
-                                                {{
-                                                $row->pembayaran->keterangan
-                                                }}
+                                                @if ($row->pembayaran->keterangan)
+                                                {{$row->pembayaran->keterangan}}
+                                                @endif
+                                                @else
+                                                Belum Dibayar
                                                 @endif
                                             </td>
                                             <td>
