@@ -72,4 +72,30 @@ class VerifikasiController extends Controller
         Alert::success('Pengunggahan Draft BAP Telah Selesai');
         return  redirect()->route('verifikasi');
     }
+
+    public function getVerifBap($bapId)
+    {
+        $id = $bapId;
+        return view('pages.admin.verifikasi.verifikasi', compact('id'));
+    }
+
+    public function putVerifBap(Request $request, $bapId)
+    {
+        $validate = $request->validate([
+            'bap' => 'required|mimes:pdf,xlsx,docx|max:2000',
+        ]);
+
+        $file = $request->file('bap');
+        $ext = $file->getClientOriginalExtension();
+        $fileName = date('dmY') . Str::random(10) . strtoupper('bap') . '.' . $ext;
+        $file->move('uploads/bap', $fileName);
+
+        $getData = Bap::where('id', $bapId)->first();
+
+        $getData->update(['bap' => $fileName]);
+
+        Log::logSave('Membuat dan mengupload verifikasi BAP');
+        Alert::success('Pengunggahan verifikasi BAP Telah Selesai');
+        return  redirect()->route('verifikasi');
+    }
 }

@@ -12,8 +12,9 @@
             <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Verifikasi</a></li>
-                    <li class="breadcrumb-item active"><a href="{{ route('pengajuan.buat') }}">Pengunggahan BAP</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('verifikasi') }}">Verifikasi</a></li>
+                    <li class="breadcrumb-item active"><a href="{{ route('verifikasi.getBuatBap') }}">Pengunggahan draft
+                            BAP</a></li>
 
                 </ol>
             </div>
@@ -80,7 +81,7 @@
 
 
                                     <hr class="mb-4">
-                                    <button class="btn btn-primary btn-lg btn-block" type="submit">Selanjutnya</button>
+                                    <button class="btn btn-primary btn-lg btn-block" type="submit">Submit</button>
                                 </form>
                             </div>
                         </div>

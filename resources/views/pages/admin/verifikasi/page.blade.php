@@ -35,8 +35,7 @@
                                         @if (Auth::user()->level == 'superadmin' || Auth::user()->level == 'admin')
                                         <th class="align-middle">Aksi</th>
                                         @endif
-                                        {{-- <th class="align-middle pr-7">Jenis Kelamin</th> --}}
-                                        {{-- <th class="align-middle" style="min-width: 12.5rem;">Nama Pasien</th> --}}
+
                                     </tr>
                                 </thead>
                                 <tbody id="orders">
@@ -50,19 +49,22 @@
                                         <td>{{ $no++ }}</td>
                                         <td>{{ $row->rumahsakit->nama }}</td>
                                         <td>{{ $row->tanggal }}</td>
-                                        <td><a href="http://" target="_blank" class="btn btn-secondary">File Draft
+                                        <td><a href="{{ asset('uploads/draft_bap/' . $row->draft_bap) }}"
+                                                target="_blank" class="btn btn-secondary">File Draft
                                                 BAP</a>
                                         </td>
                                         <td>
-                                            @if ($row->BAP)
-                                            <a href="http://" target="_blank" class="btn btn-primary">File BAP</a>
+                                            @if ($row->bap)
+                                            <a href="{{ asset('uploads/bap/' . $row->bap) }}" target="_blank"
+                                                class="btn btn-primary">File BAP</a>
                                             @else
                                             <div class="btn btn-danger">Kosong</div>
                                             @endif
                                         </td>
                                         @if (Auth::user()->level == 'superadmin' || Auth::user()->level == 'admin')
                                         <td>
-                                            <a href="http://" target="_blank" class="btn btn-success">Verifikasi</a>
+                                            <a href="{{  route('verifikasi.getVerifBap', ['bapId' => $row->id])}}"
+                                                class="btn btn-success">Verifikasi</a>
                                         </td>
                                         @endif
 

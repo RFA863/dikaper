@@ -88,6 +88,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 Route::get('/', [App\Http\Controllers\VerifikasiController::class, 'index'])->name('verifikasi');
                 Route::get('/buat-bap', [App\Http\Controllers\VerifikasiController::class, 'getBuatBap'])->name('verifikasi.getBuatBap');
                 Route::post('/post/buat-bap', [App\Http\Controllers\VerifikasiController::class, 'postBuatBap'])->name('verifikasi.postBuatBap');
+
+                Route::get('/verif-bap/{bapId}', [App\Http\Controllers\VerifikasiController::class, 'getVerifBap'])->name('verifikasi.getVerifBap');
+                Route::put('/update/verif-bap/{bapId}', [App\Http\Controllers\VerifikasiController::class, 'putVerifBap'])->name('verifikasi.putVerifBap');
             });
         });
 
