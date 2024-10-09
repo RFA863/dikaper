@@ -48,7 +48,7 @@
                                     <tr>
                                         <td>{{ $no++ }}</td>
                                         <td>{{ $row->rumahsakit->nama }}</td>
-                                        <td>{{ $row->tanggal }}</td>
+                                        <td>{{ date('d-m-Y', strtotime($row->tanggal))}}</td>
                                         <td><a href="{{ asset('uploads/draft_bap/' . $row->draft_bap) }}"
                                                 target="_blank" class="btn btn-secondary">File Draft
                                                 BAP</a>

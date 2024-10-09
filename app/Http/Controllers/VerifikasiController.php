@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Log;
 use App\Models\Bap;
 use App\Models\RumahSakit;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -15,6 +16,7 @@ class VerifikasiController extends Controller
 
     public function index()
     {
+
 
         $bapCollection = Bap::with('rumahsakit')
             ->orderBy('id', 'DESC')
@@ -76,7 +78,17 @@ class VerifikasiController extends Controller
     public function getVerifBap($bapId)
     {
         $id = $bapId;
-        return view('pages.admin.verifikasi.verifikasi', compact('id'));
+
+        $bap = Bap::where('id', $id)->first();
+
+        $rumahsakit = DB::select(
+            'SELECT * FROM rumahsakit rs WHERE rs.kode = :kode_rs LIMIT 1',
+            ['kode_rs' => $bap->rumahsakit_id]
+        );
+
+        $rumahsakit = $rumahsakit ? $rumahsakit[0] : null;
+
+        return view('pages.admin.verifikasi.verifikasi', compact('id', 'bap', 'rumahsakit'));
     }
 
     public function putVerifBap(Request $request, $bapId)

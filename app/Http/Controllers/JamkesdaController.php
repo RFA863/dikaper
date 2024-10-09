@@ -393,6 +393,7 @@ class JamkesdaController extends Controller
             'tgl_akhir' => 'required',
             'kode_rs' => 'required',
             'jenis_rawat' => 'required',
+            'keterangan' => 'required'
         ]);
 
         $pasienCollection = Pasien::with(['pembayaran', 'rumahsakit', 'pembayaranInacbgs.inacbgs'])
@@ -400,8 +401,8 @@ class JamkesdaController extends Controller
             ->where('jenis_rawat', $request->jenis_rawat)
             ->whereBetween('tgl_diterima', [$request->tgl_awal, $request->tgl_akhir])
             // Filter pasien yang memiliki data di tabel pembayaran
-            ->whereHas('pembayaran', function ($query) {
-                $query->whereNotNull('pasien_id');  // atau tambahkan kondisi tambahan jika diperlukan
+            ->whereHas('pembayaran', function ($query) use ($request) {
+                $query->whereNotNull('pasien_id')->where('keterangan', $request->keterangan);  // atau tambahkan kondisi tambahan jika diperlukan
             })
             // Filter pasien yang memiliki data di tabel pembayaranInacbgs
             ->whereHas('pembayaranInacbgs', function ($query) {
@@ -841,17 +842,22 @@ class JamkesdaController extends Controller
             'tarif_rs' => $request->tarif_rs,
             'biaya_lainnya' => $request->biaya_lainnya,
             'total_biaya' => $request->total_biaya,
-            'keterangan' => '0',
+            'keterangan' => $request->keterangan ?? "Belum Dibayar",
+            'total_pembayaran' => $request->total_pembayaran ?? "0",
+            'tgl_pembayaran' => $request->tgl_pembayaran ?? null,
         ];
 
-        $pembayaran = Pembayaran::where('pasien_id', $pasien_id);
-        if ($pembayaran->exists()) {
-            $pembayaran->first()->update($attr);
-            Log::logSave('Update data tagihan dengan pasien id=' . $pasien_id);
-        } else {
-            Pembayaran::create($attr);
-            Log::logSave('Menambahkan data tagihan dengan pasien id=' . $pasien_id);
-        }
+        $pembayaran = Pembayaran::where('pasien_id', $pasien_id)->first();
+
+        $pembayaran->update($attr);
+        Log::logSave('Update data tagihan dengan pasien id = ' . $pasien_id);
+        // if ($pembayaran->exists()) {
+        //     $pembayaran->first()->update($attr);
+        //     Log::logSave('Update data tagihan dengan pasien id=' . $pasien_id);
+        // } else {
+        //     Pembayaran::create($attr);
+        //     Log::logSave('Menambahkan data tagihan dengan pasien id=' . $pasien_id);
+        // }
 
         if (isset($request->pasien_pulang)) {
             $data = Persyaratan::where('pasien_id', $pasien_id)->first();
@@ -889,28 +895,6 @@ class JamkesdaController extends Controller
         }
 
         return redirect()->route('pengajuan.selesai');
-
-
-        // $pasien_id  = $request->pasien_id;
-        // $attr = [
-        //     'pasien_id' => $request->pasien_id,
-        //     'total_tagihan' => $request->total_tagihan,
-        //     'keterangan' => $request->keterangan,
-        //     'tgl_pembayaran_tagihan' => $request->tgl_pembayaran_tagihan
-        // ];
-
-        // $pembayaran = Pembayaran::where('pasien_id', $pasien_id);
-        // if ($pembayaran->count()) {
-        //     $insert = $pembayaran->first()->update($attr);
-        //     Log::logSave('Upadate data tagihan dengan pasien id=' . $pasien_id);
-        //     Alert::success('Data Berhasil Diupdate');
-        //     return redirect()->route('jamkesda.selesai');
-        // } else {
-        //     $insert = Pembayaran::create($attr);
-        //     Log::logSave('Menambahkan data tagihan dengan pasien id=' . $pasien_id);
-        //     Alert::success('Data Berhasil Diupdate');
-        //     return redirect()->route('jamkesda.selesai');
-        // }
     }
 
     public function hapusTagihan($pasien_id)
