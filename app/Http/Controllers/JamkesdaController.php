@@ -393,6 +393,7 @@ class JamkesdaController extends Controller
             'tgl_akhir' => 'required',
             'kode_rs' => 'required',
             'jenis_rawat' => 'required',
+            'keterangan' => 'required'
         ]);
 
         $pasienCollection = Pasien::with(['pembayaran', 'rumahsakit', 'pembayaranInacbgs.inacbgs'])
@@ -400,8 +401,8 @@ class JamkesdaController extends Controller
             ->where('jenis_rawat', $request->jenis_rawat)
             ->whereBetween('tgl_diterima', [$request->tgl_awal, $request->tgl_akhir])
             // Filter pasien yang memiliki data di tabel pembayaran
-            ->whereHas('pembayaran', function ($query) {
-                $query->whereNotNull('pasien_id');  // atau tambahkan kondisi tambahan jika diperlukan
+            ->whereHas('pembayaran', function ($query) use ($request){
+                $query->whereNotNull('pasien_id')->where('keterangan',$request->keterangan);  // atau tambahkan kondisi tambahan jika diperlukan
             })
             // Filter pasien yang memiliki data di tabel pembayaranInacbgs
             ->whereHas('pembayaranInacbgs', function ($query) {
