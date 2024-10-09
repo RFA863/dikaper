@@ -34,15 +34,27 @@
         <div class="row page-titles mx-0">
             <div class="col-sm-6 p-md-0">
                 <div class="welcome-text">
+
+                    @if ($pasien->status == 'Dikembalikan')
+                    <h4>Form Update Pengajuan</h4>
+                    <span>Buat pengajuan ulang</span>
+                    @else
                     <h4>Form Pengajuan</h4>
-                    <span>{{ $keterangan }}</span>
+                    <span>Buat pengajuan baru</span>
+                    @endif
                 </div>
             </div>
             <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Pengajuan</a></li>
+                    @if ($pasien->status == 'Dikembalikan')
+                    <li class="breadcrumb-item active"><a
+                            href="{{ route('pengajuan.getUpdate', ['id' => $pasien->pasien_id]) }}">Update</a></li>
+
+                    @else
                     <li class="breadcrumb-item active"><a href="{{ route('pengajuan.buat') }}">Buat</a></li>
+                    @endif
                 </ol>
             </div>
         </div>
@@ -103,19 +115,19 @@
                                         </div>
                                         <span class="text-muted">1</span>
                                     </li>
-                                    {{-- <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                    <li class="list-group-item d-flex justify-content-between lh-condensed">
                                         <div>
                                             <h6 class="my-0">Pengisian Formulir</h6>
                                             <small class="text-muted">Diagnosa</small>
                                         </div>
                                         <span class="text-muted">2</span>
-                                    </li> --}}
+                                    </li>
                                     <li class="list-group-item d-flex justify-content-between lh-condensed active">
                                         <div class="text-white">
                                             <h6 class="my-0 text-white">Upload / Kirim File</h6>
                                             <small>upload file kelengkapan</small>
                                         </div>
-                                        <span class="text-white">2</span>
+                                        <span class="text-white">3</span>
                                     </li>
                                 </ul>
 
@@ -137,8 +149,9 @@
                                     @csrf
                                     <input type="hidden" name="pasien_id" id="pasien_id"
                                         value="{{ $pasien->pasien_id }}">
+
                                     <div class="mb-3">
-                                        <label for="username">KTP <span class="text-danger">*</span></label>
+                                        <label for="username">KTP dan KK <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <input type="file"
                                                 class="form-control @error('ktp_kk') is-invalid @enderror" id="ktp_kk"
@@ -150,12 +163,14 @@
                                             @enderror
                                         </div>
                                     </div>
+
                                     <div class="mb-3">
-                                        <label for="username">Kartu Keluarga <span class="text-danger">*</span></label>
+                                        <label for="username">SKTM / DINSOS dan Surat Kepolisian <span
+                                                class="text-danger">*</span></label>
                                         <div class="input-group">
-                                            <input type="file" class="form-control @error('va') is-invalid @enderror"
-                                                id="va" name="va">
-                                            @error('va')
+                                            <input type="file" class="form-control @error('sktm') is-invalid @enderror"
+                                                id="sktm" name="sktm">
+                                            @error('sktm')
                                             <div class="invalid-feedback" style="width: 100%;">
                                                 {{ $message }}
                                             </div>
@@ -163,83 +178,34 @@
                                         </div>
                                     </div>
 
-                                    {{-- <div class="mb-3">
-                                        <label for="username">Surat Pernyataan</label>
-                                        <div class="input-group">
-                                            <input type="file" class="form-control" id="surat_pernyataan"
-                                                name="surat_pernyataan">
-                                            <div class="invalid-feedback" style="width: 100%;">
-                                                Your username is required.
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="mb-3">
-                                        <label for="username">Surat Rekomendasi</label>
+                                        <label for="ktp_kk">Surat RS (IGD, RANAP dan ACC RS) <span
+                                                class="text-danger">*</span></label>
                                         <div class="input-group">
-                                            <input type="file" class="form-control" id="rekomendasi" name="rekomendasi">
+                                            <input type="file" class="form-control @error('doc') is-invalid @enderror"
+                                                id="doc" name="doc">
+                                            @error('doc')
                                             <div class="invalid-feedback" style="width: 100%;">
-                                                Your username is required.
+                                                {{ $message }}
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="username">Surat Rujukan Puskesmas</label>
-                                        <div class="input-group">
-                                            <input type="file" class="form-control" id="rujukan_pkm" name="rujukan_pkm">
-                                            <div class="invalid-feedback" style="width: 100%;">
-                                                Your username is required.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="username">Surat Keterangan Rawat Inap</label>
-                                        <div class="input-group">
-                                            <input type="file" class="form-control" id="rawat_inap" name="rawat_inap">
-                                            <div class="invalid-feedback" style="width: 100%;">
-                                                Your username is required.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="username">Surat Keterangan Tidak Mampu</label>
-                                        <div class="input-group">
-                                            <input type="file" class="form-control" id="sktm" name="sktm">
-                                            <div class="invalid-feedback" style="width: 100%;">
-                                                Your username is required.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="username">KTP dan KK</label>
-                                        <div class="input-group">
-                                            <input type="file" class="form-control" id="ktp_kk" name="ktp_kk">
-                                            <div class="invalid-feedback" style="width: 100%;">
-                                                Your username is required.
-                                            </div>
+                                            @enderror
                                         </div>
                                     </div>
 
-                                    <div class="mb-3">
-                                        <label for="username">Catatan Kepolisian/ Surat Kematian/ Surat Kelahiran/
-                                            Surat Kronologis / Surat Dinsos</label>
-                                        <div class="input-group">
-                                            <input type="file" class="form-control" id="catatan" name="catatan">
-                                            <div class="invalid-feedback" style="width: 100%;">
-                                                Your username is required.
-                                            </div>
-                                        </div>
-                                        <span class="text-muted">Isi Jika Pasien Tidak Tercover oleh BPJS</span>
-                                    </div> --}}
+
+
 
                                     <hr class="mb-4">
                                     <div class="d-flex">
-                                        @if ($keterangan == 'Pengajuan Ulang')
+                                        {{-- @if ($keterangan == 'Pengajuan Ulang')
                                         <a href="{{  route('pengajuan.getUpdate', ['id' => $pasien->pasien_id]) }}"
                                             class="btn btn-danger mx-2">Kembali</a>
                                         @else
-                                        <a href="{{ route('pengajuan.buat') }}" class="btn btn-danger mx-2">Kembali</a>
-                                        @endif
-
+                                        <a href="{{ route('pengajuan.diagnosa.tambah', ['id' => $pasien->pasien_id]) }}"
+                                            class="btn btn-danger mx-2">Kembali</a>
+                                        @endif --}}
+                                        <a href="{{ route('pengajuan.diagnosa.tambah', ['id' => $pasien->pasien_id, 'ket' => 'baru']) }}"
+                                            class="btn btn-danger mx-2">Kembali</a>
                                         <button class="btn btn-primary btn-lg btn-block" type="submit">Selesai</button>
                                     </div>
                                 </form>

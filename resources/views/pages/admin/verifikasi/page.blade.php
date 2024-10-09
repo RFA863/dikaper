@@ -3,14 +3,14 @@
         <div class="row page-titles mx-0">
             <div class="col-sm-6 p-md-0">
                 <div class="welcome-text">
-                    <h4>Pengajuan</h4>
-                    <span>data pengajuan</span>
+                    <h4>Verifikasi</h4>
+                    <span>data verifikasi</span>
                 </div>
             </div>
             <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Pengajuan</a></li>
+                    <li class="breadcrumb-item active"><a href="{{ route('verifikasi') }}">verifikasi</a></li>
                 </ol>
             </div>
         </div>
@@ -20,7 +20,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <a href="{{ route('pengajuan.buat') }}" class="btn btn-primary">Buat</a>
+                        <a href="{{ route('verifikasi.getBuatBap') }}" class="btn btn-primary">Buat</a>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -28,13 +28,14 @@
                                 <thead>
                                     <tr>
                                         <th class="align-middle">No</th>
-                                        <th class="align-middle" style="min-width: 12.5rem;">Nama Pasien</th>
-                                        <th class="align-middle pr-7">Jenis Kelamin</th>
-                                        <th class="align-middle text-right">Umur</th>
-                                        <th class="align-middle text-right">Rumah Sakit</th>
-                                        <th class="align-middle text-right">Jenis Rawat</th>
-                                        <th class="align-middle text-right">Status</th>
+                                        <th class="align-middle ">Rumah Sakit</th>
+                                        <th class="align-middle ">Tanggal</th>
+                                        <th class="align-middle ">Draft BAP</th>
+                                        <th class="align-middle">BAP</th>
+                                        @if (Auth::user()->level == 'superadmin' || Auth::user()->level == 'admin')
                                         <th class="align-middle">Aksi</th>
+                                        @endif
+
                                     </tr>
                                 </thead>
                                 <tbody id="orders">
@@ -42,56 +43,36 @@
                                     $no = 1;
 
                                     @endphp
-                                    @foreach ($pasien as $row)
+                                    @foreach ($bap as $row)
                                     {{-- @dd($row) --}}
                                     <tr>
                                         <td>{{ $no++ }}</td>
-                                        <td>{{ $row->nama_pasien }}</td>
-                                        <td>{{ $row->jenis_kelamin }}</td>
-                                        <td>{{ $row->tanggal_lahir->isoFormat('D MMMM Y') }}</td>
                                         <td>{{ $row->rumahsakit->nama }}</td>
-                                        <td>{{ $row->jenis_rawat }}</td>
-                                        <td>
-                                            @if ($row->status == 'Diterima')
-                                            <a href="{{ route('jamkesda.download.diterima', ['id' => $row->pasien_id]) }}"
-                                                class="btn btn-success" target="_blank">{{ $row->status }}</a>
-                                            {{-- <button class="btn btn-success">{{ $row->status }}</button> --}}
-                                            @elseif ($row->status == 'Ditolak')
-                                            <button class="btn btn-danger">{{ $row->status }}</button>
-
-                                            @elseif ($row->status == 'Dikembalikan')
-                                            <button class="btn btn-secondary">{{ $row->status }}</button>
-
-                                            <!-- Button trigger modal -->
-                                            <button type="button" class="btn btn-secondary mt-1" data-toggle="modal"
-                                                data-target="#exampleModalCenter{{ $row->pasien_id }}">Lihat
-                                                Keterangan</button>
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="exampleModalCenter{{ $row->pasien_id }}">
-                                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Keterangan</h5>
-                                                            <button type="button" class="close"
-                                                                data-dismiss="modal"><span>&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>{{ $row->keterangan_status }}</p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-danger light"
-                                                                data-dismiss="modal">Tutup</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            @else
-                                            <button class="btn btn-secondary">{{ $row->status }}</button>
-                                            @endif
+                                        <td>{{ $row->tanggal }}</td>
+                                        <td><a href="{{ asset('uploads/draft_bap/' . $row->draft_bap) }}"
+                                                target="_blank" class="btn btn-secondary">File Draft
+                                                BAP</a>
                                         </td>
                                         <td>
+                                            @if ($row->bap)
+                                            <a href="{{ asset('uploads/bap/' . $row->bap) }}" target="_blank"
+                                                class="btn btn-primary">File BAP</a>
+                                            @else
+                                            <div class="btn btn-danger">Kosong</div>
+                                            @endif
+                                        </td>
+                                        @if (Auth::user()->level == 'superadmin' || Auth::user()->level == 'admin')
+                                        <td>
+                                            <a href="{{  route('verifikasi.getVerifBap', ['bapId' => $row->id])}}"
+                                                class="btn btn-success">Verifikasi</a>
+                                        </td>
+                                        @endif
+
+
+                                        {{-- <td>{{ $row->tanggal_lahir->isoFormat('D MMMM Y') }}</td> --}}
+                                        {{-- <td>{{ $row->jenis_rawat }}</td> --}}
+
+                                        {{-- <td>
                                             <div class="d-flex">
                                                 @if ($row->status == 'Draft')
                                                 <form
@@ -120,10 +101,8 @@
                                                 <a href="{{ route('pengajuan.lihat', ['id' => $row->pasien_id]) }}"
                                                     class="btn btn-primary">Lihat</a>
                                             </div>
-                                            {{-- <a href="{{ route('pengajuan.download', ['id' => $row->pasien_id]) }}"
-                                                class="badge badge-warning text-white my-2 py-2"
-                                                target="_blank">Download Tanda Terima</a> --}}
-                                        </td>
+
+                                        </td> --}}
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -143,6 +122,7 @@
 
     @push('after-scripts')
 
+    {{--
     <!-- Datatable -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('assets/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
@@ -180,7 +160,7 @@
             alert('Terjadi kesalahan. Silakan coba lagi.');
         });
     }
-    </script>
+    </script> --}}
 
     @endpush
 </x-app-layout>

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -40,6 +41,8 @@ class Pasien extends Model
         'tgl_diterima',
         'ket_jamkesda',
         'no_sjp',
+        'status_kepersertaan',
+        'no_hp'
     ];
 
     protected $dates = ['tanggal_lahir', 'dijamin_sejak'];
@@ -64,6 +67,11 @@ class Pasien extends Model
     public function pembayaran()
     {
         return $this->hasOne(Pembayaran::class, 'pasien_id');
+    }
+
+    public function pembayaranInacbgs()
+    {
+        return $this->hasOne(PembayaranInacbgs::class, 'pasien_id');
     }
 
     // public function noSktm()

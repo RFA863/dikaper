@@ -22,13 +22,18 @@ class RumahSakit extends Model
         'strata',
         'ref_tarif_jamkesda',
         'ref_tarif_jamkesmas',
+        'users_id'
     ];
 
     public $timestamps = false;
 
     public function pasien()
     {
-        return $this->hasMany(Pasien::class, 'kode_rs', 'kode','rumahsakit_id');
-        
+        return $this->hasMany(Pasien::class, 'kode_rs', 'kode');
+    }
+
+    public function bap()
+    {
+        return $this->hasMany(Bap::class, 'rumahsakit_id', 'kode');
     }
 }
